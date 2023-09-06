@@ -1,0 +1,42 @@
+[
+  {
+    "id": "ET1.A",
+    "tenantId": "T1",
+    "firstName": "Joe",
+    "lastName": "Smith",
+    "entryDate": "2023-06-01T00:00:00.0Z",
+    "salary": 5200
+  },
+  {
+    "id": "ET1.B",
+    "tenantId": "T1",
+    "firstName": "Hubert",
+    "lastName": "Binder",
+    "entryDate": "2021-05-15T00:00:00.0Z",
+    "salary": 6000
+  },
+  {
+    "id": "ET1.C",
+    "tenantId": "T1",
+    "firstName": "Marie",
+    "lastName": "Miller",
+    "entryDate": "2022-12-01T00:00:00.0Z",
+    "salary": 5400
+  },
+  {
+    "id": "ET2.A",
+    "tenantId": "T2",
+    "firstName": "Martin",
+    "lastName": "Stock",
+    "entryDate": "2017-01-01T00:00:00.0Z",
+    "salary": 4800
+  },
+  {
+    "id": "ET2.B",
+    "tenantId": "T2",
+    "firstName": "Jack",
+    "lastName": "Jones",
+    "entryDate": "2021-08-01T00:00:00.0Z",
+    "salary": 6300
+  }
+]

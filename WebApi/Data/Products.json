@@ -1,0 +1,40 @@
+[
+  {
+    "name": "Nectarine",
+    "nameLocalizations": {
+      "en": "Nectarine",
+      "de": "Nektarine",
+      "es": "Nectarina",
+      "pt": "Nectarina",
+      "zh-CN": "油桃"
+    },
+    "price": 0,
+    "priceLocalizations": {
+      "en": 3,
+      "de": 3.6,
+      "de-CH": 3.9,
+      "es": 2.8,
+      "pt": 2.2,
+      "zh-CN": 2.8
+    }
+  },
+  {
+    "name": "GoldenMelon",
+    "nameLocalizations": {
+      "en": "Golden Melon",
+      "de": "Honigmelone",
+      "es": "Melón dorado",
+      "pt": "Melão dourado",
+      "zh-CN": "金瓜"
+    },
+    "price": 0,
+    "priceLocalizations": {
+      "en": 4.5,
+      "de": 5.7,
+      "de-CH": 6.2,
+      "es": 4.9,
+      "pt": 3.7,
+      "zh-CN": 4
+    }
+  }
+]

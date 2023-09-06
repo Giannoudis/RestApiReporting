@@ -1,0 +1,239 @@
+﻿@page "/"
+@page "/queries"
+@page "/queries/{Query}"
+@using RestApiReporting.WebApp.ViewModel
+
+<PageTitle>Queries</PageTitle>
+
+@* --- queries selection --- *@
+@if (ReportQueries != null && ReportQueries.Count > 0)
+{
+    <MudStack Row="true" Style="width: fit-content;">
+        <MudSelect T="string"
+                   Value="Query"
+                   Dense="true"
+                   ValueChanged="ChangeQuery"
+                   Disabled="@(ReportQueries == null || ReportQueries.Count < 1)"
+                   ReadOnly="@(ReportQueries == null || ReportQueries.Count == 1)"
+                   Label="Query"
+                   Style="min-width: 20rem"
+                   Variant="Variant.Outlined">
+            @foreach (var reportQuery in ReportQueries!)
+            {
+                <MudSelectItem T="string" Value="reportQuery.MethodName">
+                    @reportQuery.MethodName
+                </MudSelectItem>
+            }
+        </MudSelect>
+        <MudText Class="align-self-center">
+            @SelectedQuery?.ControllerName
+        </MudText>
+    </MudStack>
+}
+else
+{
+    <MudPaper Typo="Typo.caption" Class="mt-4 pa-4" Style="Width: fit-content;">
+        No queries available.
+    </MudPaper>
+}
+
+@* --- query --- *@
+@if (SelectedQuery != null)
+{
+    <MudPaper Elevation="4" Class="pa-4 my-4" Style="width: fit-content; min-width: 20rem;">
+        @* --- query parameters --- *@
+        @if (SelectedParameters.Any())
+        {
+            <MudStack Class="pb-4">
+                <MudForm @ref="@parameterForm">
+                    @foreach (var parameter in SelectedParameters)
+                    {
+                        switch (parameter.DataType)
+                        {
+                            case ReportDataType.String:
+                                <MudTextField @bind-Value="@parameter.Value"
+                                              Immediate="true"
+                                              Margin="@(Dense ? Margin.Dense : Margin.Normal)"
+                                              Required="@(parameter.Required && !parameter.Nullable)"
+                                              Label="@parameter.Name.NameFormat(NameFormatType)" />
+                                break;
+                            case ReportDataType.DateTime:
+                                <MudDatePicker @bind-Date="@parameter.ValueAsDateTime"
+                                               Required="@(parameter.Required && !parameter.Nullable)"
+                                               Editable="true"
+                                               Margin="@(Dense ? Margin.Dense : Margin.Normal)"
+                                               Label="@parameter.Name.NameFormat(NameFormatType)" />
+                                break;
+                            case ReportDataType.Integer:
+                                <MudNumericField T="int?" @bind-Value="@parameter.ValueAsInteger"
+                                                 Margin="@(Dense ? Margin.Dense : Margin.Normal)"
+                                                 Required="@(parameter.Required && !parameter.Nullable)"
+                                                 Label="@parameter.Name.NameFormat(NameFormatType)" />
+                                break;
+                            case ReportDataType.Boolean:
+                                <MudSwitch T="bool?" @bind-Checked="@parameter.ValueAsBoolean"
+                                           Required="@(parameter.Required && !parameter.Nullable)"
+                                           Label="@parameter.Name.NameFormat(NameFormatType)" />
+                                break;
+                            case ReportDataType.Decimal:
+                                <MudNumericField T="decimal?" @bind-Value="@parameter.ValueAsDecimal"
+                                                 Margin="@(Dense ? Margin.Dense : Margin.Normal)"
+                                                 Required="@(parameter.Required && !parameter.Nullable)"
+                                                 Label="@parameter.Name.NameFormat(NameFormatType)" />
+                                break;
+                        }
+                    }
+                </MudForm>
+            </MudStack>
+        }
+
+        <MudStack Row="true">
+            <MudButton OnClick="ExecuteQuery"
+                       Size="@(Dense ? Size.Small : Size.Medium)"
+                       Variant="Variant.Filled" Color="Color.Primary">
+                @(SelectedDataSet != null ? "Reload" : "Load")
+            </MudButton>
+        </MudStack>
+    </MudPaper>
+}
+
+@* --- route --- *@
+@if (!string.IsNullOrWhiteSpace(Route))
+{
+    <MudPaper Elevation="4" Class="pa-4" Style="width: fit-content; min-width: 20rem;">
+        <MudStack Row="true">
+            <MudText Style="font-family: monospace; font-size: medium;">
+                <a href="@Route" title="URL" target="_blank"><u>@Route</u></a>
+            </MudText>
+            <MudIcon Icon="@Icons.Material.Filled.ArrowOutward" Size="Size.Small" />
+        </MudStack>
+    </MudPaper>
+}
+
+@* --- download --- *@
+@if (SelectedDataSet != null)
+{
+    <MudStack Row="true" Class="py-4">
+        <MudText Typo="Typo.button" Class="align-self-center">
+            Download
+        </MudText>
+        <MudButton OnClick="DownloadJson"
+                   Size="@(Dense ? Size.Small : Size.Medium)"
+                   Variant="Variant.Filled" Color="Color.Primary">
+            Json
+        </MudButton>
+        <MudButton OnClick="DownloadXml"
+                   Size="@(Dense ? Size.Small : Size.Medium)"
+                   Variant="Variant.Filled" Color="Color.Primary">
+            XML
+        </MudButton>
+        <MudButton OnClick="DownloadExcel"
+                   Size="@(Dense ? Size.Small : Size.Medium)"
+                   Variant="Variant.Filled" Color="Color.Primary">
+            Excel
+        </MudButton>
+        <MudButton OnClick="DownloadPdf"
+                   Size="@(Dense ? Size.Small : Size.Medium)"
+                   Variant="Variant.Filled" Color="Color.Primary">
+            Pdf
+        </MudButton>
+    </MudStack>
+}
+
+@* --- busy indicator --- *@
+@if (Loading)
+{
+    <MudProgressLinear Color="Color.Info" Rounded="true"
+                       Class="mud-table-loading-progress"
+                       Indeterminate="true" />
+}
+
+@* --- query results --- *@
+@if (SelectedDataSet != null)
+{
+    <MudDataGrid T="ReportRow"
+                 Items="SelectedRows"
+                 Hideable="false"
+                 ShowColumnOptions="false"
+                 Filterable="true"
+                 Dense="@Dense"
+                 Elevation="4"
+                 RowsPerPage="@(Configuration?.DataPageCount() ?? 10)"
+                 FilterMode="@(Configuration?.FilterMode() ?? DataGridFilterMode.Simple)"
+                 ColumnResizeMode="ResizeMode.Column"
+                 SortMode="SortMode.Single">
+        <Columns>
+            @for (var column = 0; column < SelectedColumns.Count; column++)
+            {
+                var index = column;
+                switch (SelectedColumns[column].DataType)
+                {
+                    case ReportDataType.DateTime:
+                        <PropertyColumn Property="x => x.GetDateTimeValue(index)"
+                                        Hidden="@FilteredColumn(index)"
+                                        Title="@SelectedColumns[index].Name.NameFormat(NameFormatType)">
+                            <CellTemplate>
+                                @context.Item.GetDateTimeValue(index)?.ToCompactString()
+                            </CellTemplate>
+                        </PropertyColumn>
+                        break;
+                    case ReportDataType.Integer:
+                        <PropertyColumn Property="x => x.GetIntegerValue(index)"
+                                        Hidden="@FilteredColumn(index)"
+                                        Title="@SelectedColumns[index].Name.NameFormat(NameFormatType)" />
+                        break;
+                    case ReportDataType.Boolean:
+                        <PropertyColumn Property="x => x.GetBooleanValue(index)"
+                                        Hidden="@FilteredColumn(index)"
+                                        Title="@SelectedColumns[index].Name.NameFormat(NameFormatType)" />
+                        break;
+                    case ReportDataType.Decimal:
+                        <PropertyColumn Property="x => x.GetDecimalValue(index)"
+                                        Hidden="@FilteredColumn(index)"
+                                        Title="@SelectedColumns[index].Name.NameFormat(NameFormatType)" />
+                        break;
+                    case ReportDataType.String:
+                        <PropertyColumn Property="x => x.GetStringValue(index)"
+                                        Hidden="@FilteredColumn(index)"
+                                        Title="@SelectedColumns[index].Name.NameFormat(NameFormatType)" />
+                        break;
+                }
+            }
+        </Columns>
+        <PagerContent>
+            <MudStack Row="true">
+                @if (HasParameterColumns())
+                {
+                    <MudSwitch @bind-Checked="ShowParameterColumns"
+                               Size="Size.Small"
+                               Color="Color.Primary"
+                               Class="ml-4"
+                               Style="align-self: center;">
+                        Parameter columns
+                    </MudSwitch>
+                }
+                <MudSpacer />
+                <MudDataGridPager T="ReportRow" />
+            </MudStack>
+        </PagerContent>
+        <NoRecordsContent>
+            Empty query result.
+        </NoRecordsContent>
+    </MudDataGrid>
+}
+
+@* --- messages --- *@
+@if (!string.IsNullOrWhiteSpace(InfoMessage))
+{
+    <MudPaper Class="mt-4 py-2 px-4 mud-info"
+              Style="width: fit-content;">
+        @InfoMessage
+    </MudPaper>
+}
+@if (!string.IsNullOrWhiteSpace(ErrorMessage))
+{
+    <MudPaper Class="mt-4 py-2 px-4 mud-error"
+              Style="width: fit-content;">
+        @ErrorMessage
+    </MudPaper>
+}

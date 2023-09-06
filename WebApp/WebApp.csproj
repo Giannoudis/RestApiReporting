@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Version>1.0.0</Version>
+		<AssemblyName>RestApiReporting.WebApp</AssemblyName>
+		<AssemblyTitle>API Reporting App</AssemblyTitle>
+		<RootNamespace>RestApiReporting.WebApp</RootNamespace>
+		<UserSecretsId>RestApiReporting.WebApp</UserSecretsId>
+		<Copyright>(c) 2023 Jani Giannoudis</Copyright>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="7.0.0" />
+		<PackageReference Include="FastReport.OpenSource" Version="2023.2.29" />
+		<PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2023.2.29" />
+		<PackageReference Include="MudBlazor" Version="6.9.0" />
+		<PackageReference Include="NPOI" Version="2.6.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\RestApiReporting\RestApiReporting.csproj" />
+	</ItemGroup>
+
+</Project>

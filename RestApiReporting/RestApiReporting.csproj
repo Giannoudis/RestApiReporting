@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AssemblyName>RestApiReporting</AssemblyName>
+		<RootNamespace>RestApiReporting</RootNamespace>
+		<Title>REST API Reporting for .NET</Title>
+		<Version>1.0.0</Version>
+		<Authors>Jani Giannoudis</Authors>
+		<Copyright>(c) 2011-2023 by Jani Giannoudis, Switzerland</Copyright>
+		<Description>REST API Reporting for .NET</Description>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/Giannoudis/RestApiLocalization</RepositoryUrl>
+		<RepositoryType>GitHub</RepositoryType>
+		<PackageId>RestApiReporting.NET</PackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+	</ItemGroup>
+
+</Project>

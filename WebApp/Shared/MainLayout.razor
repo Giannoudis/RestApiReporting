@@ -1,0 +1,94 @@
+﻿@using System.Reflection
+@inherits LayoutComponentBase
+
+<MudThemeProvider @ref="@mudThemeProvider" @bind-IsDarkMode="@IsDarkMode" />
+
+<PageTitle>API Reporting</PageTitle>
+
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu"
+                       Title="Toggle Sidebar"
+                       Color="Color.Inherit"
+                       Edge="Edge.Start"
+                       OnClick="@NavBarToggle" />
+        <MudTooltip Placement="Placement.Bottom">
+            <ChildContent>
+                <MudText Typo="Typo.h6">
+                    @AppTitle
+                </MudText>
+            </ChildContent>
+            <TooltipContent>
+                @AppCopyright • @VersionInfo • MIT License
+            </TooltipContent>
+        </MudTooltip>
+        <MudSpacer />
+        <MudText Typo="Typo.caption">@ApiUrl</MudText>
+        <MudToggleIconButton @bind-Toggled="@IsDarkMode"
+                             Class="flex-grow-0"
+                             Icon="@Icons.Material.Filled.DarkMode" Color="@Color.Inherit" Title="To dark mode"
+                             ToggledIcon="@Icons.Material.Filled.LightMode" ToggledTitle="To light mode" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="NavBarOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer MaxWidth="@LayoutWidth" Class="my-4">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    [Inject] private IConfiguration? Configuration { get; set; }
+    [Inject] private HttpClient? HttpClient { get; set; }
+
+    private MudThemeProvider? mudThemeProvider;
+    private bool IsDarkMode { get; set; } = true;
+    private bool NavBarOpen { get; set; } = true;
+    private string? ApiUrl { get; set; }
+    private string? AppCopyright { get; set; }
+    private string? AppTitle { get; set; }
+    private string? VersionInfo { get; set; }
+    private MaxWidth LayoutWidth { get; set; } = MaxWidth.Large;
+
+    private void NavBarToggle()
+    {
+        NavBarOpen = !NavBarOpen;
+    }
+
+    protected override Task OnInitializedAsync()
+    {
+        // app info
+        var assembly = GetType().Assembly;
+        var versionInfo = System.Diagnostics.FileVersionInfo.GetVersionInfo(assembly.Location);
+        ApiUrl = $"{HttpClient?.BaseAddress?.AbsoluteUri.Trim('/').RemoveFromStart("http://").RemoveFromStart("https://")}";
+        VersionInfo = $"v{versionInfo.FileMajorPart}.{versionInfo.FileMinorPart}";
+        AppCopyright = versionInfo.LegalCopyright;
+
+        // app title
+        var configTitle = Configuration?.AppTitle();
+        var titleAttribute = 
+            assembly.GetCustomAttribute(typeof(AssemblyTitleAttribute)) as AssemblyTitleAttribute;
+        AppTitle = configTitle ?? titleAttribute?.Title ?? "REST API Reporting";
+
+        // layout
+        LayoutWidth = Configuration?.LayoutMode() ?? MaxWidth.Large;
+
+        return base.OnInitializedAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (mudThemeProvider != null)
+            {
+                IsDarkMode = await mudThemeProvider.GetSystemPreference();
+                StateHasChanged();
+            }
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}
