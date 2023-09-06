@@ -212,3 +212,7 @@ public class TenantEmployeeReport : IReport
 ```
 
 The ability to convert generic `IEnumerable` collections to tables allows you to merge the results of queries and custom services into a single dataset.
+
+### Source Code and NuGet
+👉 Source code on [GitHub](https://github.com/Giannoudis/RestApiReporting)
+👉 Package on [NuGet](https://www.nuget.org/packages/RestApiReporting.NET/)
