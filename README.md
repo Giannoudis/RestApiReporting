@@ -1,11 +1,11 @@
 As REST APIs become more centralized sources of information, the need for flexible reporting on REST API data increases. The Reporting API extends an existing REST API so that its data can be analyzed in an easy-to-use reporting tool.
 
-For a project with an extensive REST API, I developed a solution to query the GET endpoint data according to a consistent schema.
+For a project with an extensive REST API, I developed a solution to query the `GET` endpoint data according to a consistent schema.
 - The API developer specifies which `GET` endpoints are available for reporting.
 - The user can browse, filter, sort, and convert the data to various formats in the UI.
 - Complex queries with linked data reports can be implemented in a single report.
 
-The Reporting API includes an endpoint that acts as a proxy between queries and `GET` endpoints. New `GET` endpoints can be evaluated without further customization. A single model schema is provided to ensure that all queries can be accessed through the same endpoint. The Reporting API uses the `ReportDataSet` for this purpose, which is compatible with the ADO.NET `DataSet` and can be serialized for transmission.
+The Reporting API includes an endpoint that acts as a proxy between queries and `GET` endpoints. New `GET` endpoints can be evaluated without further customization. A single model schema is provided to ensure that all queries can be accessed through the same endpoint. The Reporting API uses the `ReportDataSet` for this purpose, which is compatible with the ADO.NET [`DataSet`](https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/ado-net-datasets) and can be serialized for transmission.
 
 The following illustration shows the flow of a request to the `GetWeatherForecast` endpoint.
 <p align="center">
@@ -24,8 +24,7 @@ DI is used to instantiate the desired controller (`WeatherForecastController`) a
 #### 4. Analyzing the Query Data
 The API client application can convert the `ReportingDataSet` to an ADO.NET `DataSet`, which allows for tabular analysis and format conversions.
 
-| Using Reflection to evaluate data takes longer than using direct object access. Reports that need to process large amounts of data should obtain the data through special services. |
-|----|
+> 👉 Using Reflection to evaluate data takes longer than using direct object access. Reports that need to process large amounts of data should obtain the data through special services.
 
 ### Enabling Reporting on Your REST API
 There are three steps to adding reporting to your REST API.
@@ -110,7 +109,7 @@ After that, the web application can be opened in the browser at `https://localho
 #### Query Page
 This page allows you to execute all query methods.
 <p align="center">
-    <img src="docs/ReportingQueries.png" alt="REST API Web App" width="600" />
+    <img src="docs/ReportingQueries.png" alt="REST API Reporting Queries" width="600" />
 </p>
 
 > Queries always have a single result table. This is also true for GET endpoints, which return a single object.
@@ -118,21 +117,22 @@ This page allows you to execute all query methods.
 #### Report Page
 The report page allows you to build reports.
 <p align="center">
-    <img src="docs/ReportingReports.png" alt="REST API Web App" width="600" />
+    <img src="docs/ReportingReports.png" alt="REST API Reporting Reports" width="600" />
 </p>
 
 > 👉 Reports can contain data in multiple tables that are related to each other.
 
 #### Customizing the Web Application
 The web application settings are defined in the `appsettings.json` file.
+
 | Setting | Description | Default |
 |:---|:---|:---:|
-| `ApiUrl` | API URL such as https://localhost:7161/| x |
+| `ApiUrl` | API URL such as https://localhost:7161/ | x |
 | `AppTitle` | Application title | system |
 | `LayoutMode` | Page layout mode: `ExtraSmall`, `Small`, `Medium`, `Large`, `ExtraLarge` or `ExtraExtraLarge` | `Large` |
 | `NameFormat`| Name formatting style: `None`, `PascalSentence` or `CamelSentence` | `PascalSentence` |
-| `DenseMode` | Grid dense mode | `false`|
-| `DataPageCount`| Grid rows per page | `10`|
+| `DenseMode` | Grid dense mode | `false` |
+| `DataPageCount`| Grid rows per page | `10` |
 | `FilterMode` | Grid filter mode: `Simple`, `Menu`, `Menu`, `Menu`, `Menu` or `Row` | `Simple` |
 
 > 👉 In development mode, it is recommended that you outsource endpoint configuration to [User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets).
