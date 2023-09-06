@@ -1,7 +1,3 @@
-# Power your .NET REST API with data queries and reports
-# Power Your .NET REST API with Data Query and Reporting
-
-
 As REST APIs become more centralized sources of information, the need for flexible reporting on REST API data increases. The Reporting API extends an existing REST API so that its data can be analyzed in an easy-to-use reporting tool.
 
 For a project with an extensive REST API, I developed a solution to query the GET endpoint data according to a consistent schema.
