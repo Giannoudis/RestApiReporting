@@ -209,5 +209,10 @@ public class TenantEmployeeReport : IReport
 
 The ability to convert generic `IEnumerable` collections to tables allows you to merge the results of queries and custom services into a single dataset.
 
-### NuGet
-👉 Package on [NuGet](https://www.nuget.org/packages/RestApiReporting.NET/)
+### License and package
+The library is licensed under the MIT license and uses the following open source components for the web application
+- User interface with [MudBlazor](https://github.com/MudBlazor/MudBlazor/) (MIT license)
+- Excel conversion with [NPOI](https://github.com/dotnetcore/NPOI) (Apache 2.0 license)
+- PDF conversion with [FastReport](https://github.com/FastReports/FastReport) (MIT license)
+
+👉 NuGet Package [RestApiReporting.NET](https://www.nuget.org/packages/RestApiReporting.NET/)
