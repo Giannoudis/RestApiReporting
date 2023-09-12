@@ -1,4 +1,5 @@
 using RestApiReporting.Service;
+using RestApiReporting.WebApi.Reports;
 
 namespace RestApiReporting.WebApi.Controllers;
 
@@ -6,8 +7,10 @@ namespace RestApiReporting.WebApi.Controllers;
 //[Route("myreports")]
 public class ReportingController : ReportingControllerBase
 {
-    public ReportingController(IApiReportingService reportingService) :
+    public ReportingController(IApiReportingService reportingService,
+        ITenantMemoryReport tenantMemoryReport) :
         base(reportingService)
     {
+        reportingService.Report.AddReportAsync(tenantMemoryReport);
     }
 }
