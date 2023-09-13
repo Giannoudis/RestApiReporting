@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.OpenApi.Models;
 using RestApiReporting.Service;
 using RestApiReporting.WebApi.Reports;
+using RestApiReporting.WebApi.Service;
 
 namespace RestApiReporting.WebApi;
 
@@ -33,12 +34,14 @@ public class Program
 
         // report
         builder.Services.AddReporting(
-        //builder.Services.AddReporting(
+            //builder.Services.AddReporting(
             //new QueryFilter(methodFilter: method => method.IsReporting())
             );
 
         // report with DI
-        builder.Services.AddTransient<ITenantMemoryReport>(_ => new TenantMemoryReport());
+        builder.Services.AddTransient<ITenantService>(_ => new TenantService());
+        builder.Services.AddTransient<ITenantMemoryReport>(
+            x => new TenantMemoryReport(x.GetRequiredService<ITenantService>()));
 
         var app = builder.Build();
 

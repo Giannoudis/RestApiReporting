@@ -1,5 +1,6 @@
 ﻿using RestApiReporting.Service;
 using RestApiReporting.WebApi.Model;
+using RestApiReporting.WebApi.Service;
 
 namespace RestApiReporting.WebApi.Reports;
 
@@ -12,6 +13,8 @@ public interface ITenantMemoryReport : IReport
 [ReportingIgnore]
 public class TenantMemoryReport : ITenantMemoryReport
 {
+    public ITenantService TenantService { get; }
+
     public string Name => "TenantMemory";
     public string Description => "List tenants from memory";
     public IList<string>? SupportedCultures => null;
@@ -25,11 +28,14 @@ public class TenantMemoryReport : ITenantMemoryReport
         }
     };
 
+    public TenantMemoryReport(ITenantService tenantService)
+    {
+        TenantService = tenantService;
+    }
+
     public Task<ReportResponse> BuildAsync(
         IApiQueryService queryService, ReportRequest request)
     {
-        var tenants = new List<Tenant>();
-
         // parameter count
         var count = 10;
         if (request.Parameters != null)
@@ -41,11 +47,7 @@ public class TenantMemoryReport : ITenantMemoryReport
             }
         }
 
-        // test tenants
-        for (var i = 1; i <= count; i++)
-        {
-            tenants.Add(new() { Id = $"T{i}", Name = $"Tenant {i}" });
-        }
+        var tenants = TenantService.GetTenants().Take(count);
 
         var reportDataSet = tenants
             .ToReportDataTable(primaryKey: nameof(Tenant.Id))

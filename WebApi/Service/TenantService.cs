@@ -4,7 +4,7 @@ using RestApiReporting.WebApi.Model;
 
 namespace RestApiReporting.WebApi.Service;
 
-public class TenantService
+public class TenantService : ITenantService
 {
     private string FileName { get; }
     private readonly JsonSerializerOptions serializerOptions = new()
