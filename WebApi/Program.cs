@@ -39,9 +39,8 @@ public class Program
             );
 
         // report with DI
-        builder.Services.AddTransient<ITenantService>(_ => new TenantService());
-        builder.Services.AddTransient<ITenantMemoryReport>(
-            x => new TenantMemoryReport(x.GetRequiredService<ITenantService>()));
+        builder.Services.AddTransient<ITenantService, TenantService>();
+        builder.Services.AddTransient<ITenantMemoryReport, TenantMemoryReport>();
 
         var app = builder.Build();
 
